@@ -1,0 +1,136 @@
+{% extends 'dashboard/layouts/base.html' %}
+
+{% load static%}
+
+{% block title %}Server Form{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">
+    <a href="{% url 'dashboard:home' %}"> Dashboard</a>
+</li>
+<li class="breadcrumb-item" aria-current="page">Server Form</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card card-default">
+            <div class="card-header card-header-border-bottom">
+                <h2>Server Form </h2>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+  
+                    <div class="form-group">
+                        <label>{{ form.name.label }} {% if form.name.field.required %}<span style="color:red">*</span>
+                            {% endif %}</label>
+                        {{ form.name }}
+                        <span class="error" style="color: red;">{{ form.name.errors|striptags }}</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ form.server_type.label }} {% if form.server_type.field.required %}<span style="color:red">*</span>
+                            {% endif %}</label>
+                        {{ form.server_type }}
+                        <span class="error" style="color: red;">{{ form.server_type.errors|striptags }}</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ form.disk_type.label }} {% if form.disk_type.field.required %}<span style="color:red">*</span>
+                            {% endif %}</label>
+                        {{ form.disk_type }}
+                        <span class="error" style="color: red;">{{ form.disk_type.errors|striptags }}</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ form.server_owner.label }} {% if form.server_owner.field.required %}<span style="color:red">*</span>
+                            {% endif %}</label>
+                        {{ form.server_owner }}
+                        <span class="error" style="color: red;">{{ form.server_owner.errors|striptags }}</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ form.server_location.label }} {% if form.server_location.field.required %}<span style="color:red">*</span>
+                            {% endif %}</label>
+                        {{ form.server_location }}
+                        <span class="error" style="color: red;">{{ form.server_location.errors|striptags }}</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ form.cpu.label }} {% if form.cpu.field.required %}<span style="color:red">*</span>
+                            {% endif %}</label>
+                        {{ form.cpu }}
+                        <span class="error" style="color: red;">{{ form.cpu.errors|striptags }}</span>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group col-md-1 mt-2">
+                            <label>{{ form.ram.label }} {% if form.ram.field.required %}<span style="color:red">*</span>
+                                {% endif %}</label>
+                        </div>
+                            
+                            <div class="form-group col-md-1">
+                                {{ form.ram }} 
+                            </div>
+
+                            <div class="form-group col-md-1">
+                                {{ form.memory_size }} 
+                            </div>
+                            
+                            <span class="error" style="color: red;">{{ form.ram.errors|striptags }}</span>
+                            <span class="error" style="color: red;">{{ form.memery_size.errors|striptags }}</span>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ form.ip_address.label }} {% if form.ip_address.field.required %}<span style="color:red">*</span>
+                            {% endif %}</label>
+                        {{ form.ip_address }}
+                        <span class="error" style="color: red;">{{ form.ip_address.errors|striptags }}</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ form.username.label }} {% if form.username.field.required %}<span style="color:red">*</span>
+                            {% endif %}</label>
+                        {{ form.username }}
+                        <span class="error" style="color: red;">{{ form.username.errors|striptags }}</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ form.password.label }} {% if form.password.field.required %}<span style="color:red">*</span>
+                            {% endif %}</label>
+                        {{ form.password }}
+                        <span class="error" style="color: red;">{{ form.password.errors|striptags }}</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ form.public_ip.label }} {% if form.public_ip.field.required %}<span style="color:red">*</span>
+                            {% endif %}</label>
+                        {{ form.public_ip }}
+                        <span class="error" style="color: red;">{{ form.public_ip.errors|striptags }}</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ form.private_ip.label }} {% if form.private_ip.field.required %}<span style="color:red">*</span>
+                            {% endif %}</label>
+                        {{ form.private_ip }}
+                        <span class="error" style="color: red;">{{ form.private_ip.errors|striptags }}</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ form.remarks.label }} {% if form.remarks.field.required %}<span style="color:red">*</span>
+                            {% endif %}</label>
+                        {{ form.remarks }}
+                        <span class="error" style="color: red;">{{ form.remarks.errors|striptags }}</span>
+                    </div>
+
+                    <div class="form-footer pt-4 pt-5 mt-4 border-top" style="text-align:right">
+                        <button type="submit" class="btn btn-primary btn-default">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

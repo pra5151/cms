@@ -1,0 +1,125 @@
+{% extends 'dashboard/layouts/base.html' %}
+
+{% load static%}
+
+{% block title %}Disk Types{% endblock title %}
+
+{% block subtitle %}Disk Types{% endblock subtitle %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">
+   <a href=""> Dashboard</a>
+</li>
+<li class="breadcrumb-item" aria-current="page">Disk Types</li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card card-default">
+            <div class="card-header card-header-border-bottom" style="width:100%; display:flex; justify-content:flex-end;">
+                <div>
+                    <div style="text-align: right">
+                        <a href="{% url 'dashboard:disk-type-create' %}" class="btn btn-outline-primary disk-type-form">
+                            <i class="fa fa-plus"></i>&nbsp; Add Disk
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                
+                <table class="table table-responsive table-responsive-large" style="width:100%; font-size:15px;">
+                    <thead>
+                        <tr>
+                            <th>S.No.</th>
+                            <th>Name</th>
+                            <th id="actions">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for disk_type in object_list %}
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ disk_type.name }}</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a href="{% url 'dashboard:disk-type-update' disk_type.id %}"
+                                    class="btn-sm btn btn-info btn-success-space disk-type-form" data-toggle="tooltip"
+                                    data-original-title="Modify">
+                                    <i class="fa fa-pencil-alt"></i>
+                                </a>
+                                {% if request.user.is_superuser %}
+                                <a href="{% url 'dashboard:disk-type-delete' disk_type.id %}"
+                                    class="btn-sm btn btn-danger delete-link" data-toggle="tooltip"
+                                    data-original-title='Delete'>
+                                    <i class="far fa-trash-alt"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="disk_type_form" tabindex="-1" aria-labelledby="emailForm" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+
+{% block script %}
+<script>
+    $('body').on('click', '.disk-type-form', function(e){
+        e.preventDefault()
+        var url = $(this).attr('href')
+        $('#disk_type_form').modal('show')
+        $.get(url, function(data){
+            $('#disk_type_form .modal-content').empty().append(data)
+        })
+    })
+</script>
+
+<script>
+    $('body').on('submit', 'form#disktypeAjaxForm', function(e){
+        e.preventDefault()
+        var that = this;
+        var url = $(this).attr('action')
+        $('.error_text').remove();
+        var formData = new FormData(this);
+        $(that).find('.btn-submit').addClass('disabled').attr('disabled', true);
+        console.log('asd', url)
+        $.ajax({
+            url: url,
+            data: formData,
+            method: 'post',
+            processData: false,
+            contentType: false,
+        })
+        .done(function(data){
+            window.location.href = data.url
+        })
+        .fail(function(xhr){
+            if(xhr.status == 400){
+                data = xhr.responseJSON;
+                for (let key in data.errors) {
+                    $(`[name="${key}"]`).parent().append($(`<small class="error_text error_${key}" style ="color:red">${data.errors[key]}</small>`))
+                }
+            }
+        })
+        .always(function(){
+            $(that).find('.btn-submit').removeClass('disabled').removeAttr('disabled');
+        })
+    })
+</script>
+{% endblock %}

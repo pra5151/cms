@@ -1,0 +1,102 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+    <title>Server List</title>
+
+    <style>
+        @page{
+            size : a4 landscape;
+            @frame content_frame{
+                width: 830pt;
+                left: 5pt;
+                top: 30pt;
+              
+            }
+        }
+        table{
+            border: 1px solid black;
+            border-collapse: collapse;
+            text-align:center;
+            font-size:15px;
+        }
+
+        table td {
+            padding: 5px 5px 0px 5px;
+            font-weight:normal;
+        }
+    </style>
+  </head>
+  <body>        
+    <div class="container">
+        <h1 style="text-align: center; color:blue; font-size: 20px;">Servers</h1>
+        <span style="text-align: right;">{{ current_date }}</span>
+        <table class="" style="width:100%; margin:0px;">
+            <tr style="border-bottom:1px solid black; font-size : 13px; padding:5px;">
+
+                <td>
+                    <span><strong>S.No.</strong></span>
+                </td>
+                <td>
+                    <span><strong>Name</strong></span>
+                </td>
+                <td>
+                    <span><strong>Server Type</strong></span>
+                </td>
+                <td>
+                    <span><strong>Disk Type</strong></span>
+                </td>
+                <td>
+                    <span><strong>Server Owner</strong></span>
+                </td>
+                <td>
+                    <span><strong>Server Location</strong></span>
+                </td>
+                <td>
+                    <span><strong>CPU</strong></span>
+                </td>
+                <td>
+                    <span><strong>Ram</strong></span>
+                </td>
+                <td width='120px'>
+                    <span><strong>IP Address</strong></span>
+                </td>
+                <td width='120px'>
+                    <span><strong>Public Ip</strong></span>
+                </td>
+                <td width='120px'>
+                    <span><strong>Private Ip</strong></span>
+                </td>
+            </tr>
+            
+            {% for server in servers %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ server.name }}</td>
+                    <td>{{ server.server_type }}</td>
+                    <td>{{ server.disk_type }}</td>
+                    <td>{{ server.server_owner }}</td>
+                    <td>{{ server.server_location }}</td>
+                    <td>{{ server.cpu|default:'' }}</td>
+                    <td>{{ server.ram_size }}</td>
+                    <td>{{ server.ip_address }}</td>
+                    <td>{{ server.public_ip }}</td>
+                    <td>{{ server.private_ip }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+ 
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script><script src="{% static 'dashboard/assets/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    
+  </body>
+</html>

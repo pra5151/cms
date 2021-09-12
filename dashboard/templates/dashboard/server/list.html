@@ -1,0 +1,146 @@
+{% extends 'dashboard/layouts/base.html' %}
+
+{% load static%}
+
+{% load has_groups %}
+
+{% block title %}Servers{% endblock title %}
+
+{% block subtitle %}Servers{% endblock subtitle %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">
+   <a href=""> Dashboard</a>
+</li>
+<li class="breadcrumb-item" aria-current="page">Servers</li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card card-default">
+            <div class="card-header card-header-border-bottom" style="width:100%; display:flex; justify-content:flex-end;">
+                <div>
+                    <div style="text-align: right">
+                        <form method="GET" class="filter-beneficiary" style="width: 100%; display:flex; justify-content:space-between; gap:10px; align-items:center; padding-left:20px; margin-bottom:20px;">
+                            {{ filter.form }}
+                            <button type="submit" class="btn btn-primary" style="flex:44%;">Search</button>
+                        </form>
+
+                        {% if request.user|has_groups:'Admin' or request.user.is_superuser %}
+                        <a href="{% url 'dashboard:server-pdf-create' %}" class="btn btn-outline-danger" target="__blank">
+                            <i class="fa fa-file-pdf"></i>&nbsp; Generate PDF
+                        </a>
+
+                        <a href="{% url 'dashboard:server-pdf-email' %}" class="btn btn-outline-secondary email-form">
+                            <i class="fas fa-envelope-square"></i>&nbsp; Send PDF via Email
+                        </a>
+                        
+                        <a href="{% url 'dashboard:server-create' %}" class="btn btn-outline-primary">
+                            <i class="fa fa-plus"></i>&nbsp; Add Server
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                
+                <table class="table table-responsive table-responsive-large" style="width:100%; font-size:15px;">
+                    <thead>
+                        <tr>
+                            <th>S.No.</th>
+                            <th>Name</th>
+                            <th>Server Type</th>
+                            <th>Disk Type</th>
+                            <th>Server Owner</th>
+                            <th>Server Location</th>
+                            <th>IP Address</th>
+                            <th>Public Id</th>
+                            <th id="actions">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for server in object_list %}
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ server.name }}</td>
+                        <td><span class="badge badge-primary">{{ server.server_type }}</span></td>
+                        <td><span class="badge badge-primary">{{ server.disk_type }}</span></td>
+                        <td><span class="badge badge-primary">{{ server.server_owner }}</span></td>
+                        <td><span class="badge badge-primary">{{ server.server_location }}</span></td>
+                        <td>{{ server.ip_address }}</td>
+                        <td>{{ server.public_ip }}</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                {% if request.user|has_groups:'Admin' or request.user.is_superuser %}
+                                <a href="{% url 'dashboard:server-update' server.id %}"
+                                    class="btn-sm btn btn-info btn-success-space " data-toggle="tooltip"
+                                    data-original-title="Modify">
+                                    <i class="fa fa-pencil-alt"></i>
+                                </a>
+                                {% endif %}
+                                <a href="{% url 'dashboard:server-detail' server.id %}"
+                                    class="btn-sm btn btn-secondary btn-success-space server-detail" data-toggle="tooltip"
+                                    data-original-title="Detail">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                                {% if request.user.is_superuser %}
+                                <a href="{% url 'dashboard:server-delete' server.id %}"
+                                    class="btn-sm btn btn-danger delete-link" data-toggle="tooltip"
+                                    data-original-title='Delete'>
+                                    <i class="far fa-trash-alt"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="server_detail" tabindex="-1" aria-labelledby="serverDetail" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="email_form" tabindex="-1" aria-labelledby="emailForm" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+
+{% block script %}
+<script>
+    $('body').on('click', '.server-detail', function(e){
+        e.preventDefault()
+        var url = $(this).attr('href')
+        $('#server_detail').modal('show')
+        $.get(url, function(data){
+            $('#server_detail .modal-content').empty().append(data)
+        })
+    })
+</script>
+
+<script>
+    $('body').on('click', '.email-form', function(e){
+        e.preventDefault()
+        var url = $(this).attr('href')
+        $('#email_form').modal('show')
+        $.get(url, function(data){
+            $('#email_form .modal-content').empty().append(data)
+        })
+    })
+</script>
+{% endblock %}

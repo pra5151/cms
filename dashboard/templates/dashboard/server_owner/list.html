@@ -1,0 +1,124 @@
+{% extends 'dashboard/layouts/base.html' %}
+
+{% load static%}
+
+{% block title %}Server Owners{% endblock title %}
+
+{% block subtitle %}Server Owners{% endblock subtitle %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item">
+   <a href=""> Dashboard</a>
+</li>
+<li class="breadcrumb-item" aria-current="page">Server Owners</li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card card-default">
+            <div class="card-header card-header-border-bottom" style="width:100%; display:flex; justify-content:flex-end;">
+                <div>
+                    <div style="text-align: right">
+                        <a href="{% url 'dashboard:server-owner-create' %}" class="btn btn-outline-primary server-owner-form">
+                            <i class="fa fa-plus"></i>&nbsp; Add Server Owner
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                
+                <table class="table table-responsive table-responsive-large" style="width:100%; font-size:15px;">
+                    <thead>
+                        <tr>
+                            <th>S.No.</th>
+                            <th>Name</th>
+                            <th id="actions">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for server_owner in object_list %}
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ server_owner.name }}</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a href="{% url 'dashboard:server-owner-update' server_owner.id %}"
+                                    class="btn-sm btn btn-info btn-success-space server-owner-form" data-toggle="tooltip"
+                                    data-original-title="Modify">
+                                    <i class="fa fa-pencil-alt"></i>
+                                </a>
+                                {% if request.user.is_superuser %}
+                                <a href="{% url 'dashboard:server-owner-delete' server_owner.id %}"
+                                    class="btn-sm btn btn-danger delete-link" data-toggle="tooltip"
+                                    data-original-title='Delete'>
+                                    <i class="far fa-trash-alt"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="server_owner_form" tabindex="-1" aria-labelledby="emailForm" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+
+{% block script %}
+<script>
+    $('body').on('click', '.server-owner-form', function(e){
+        e.preventDefault()
+        var url = $(this).attr('href')
+        $('#server_owner_form').modal('show')
+        $.get(url, function(data){
+            $('#server_owner_form .modal-content').empty().append(data)
+        })
+    })
+</script>
+
+<script>
+    $('body').on('submit', 'form#serverownerAjaxForm', function(e){
+        e.preventDefault()
+        var that = this;
+        var url = $(this).attr('action')
+        $('.error_text').remove();
+        var formData = new FormData(this);
+        $(that).find('.btn-submit').addClass('disabled').attr('disabled', true);
+        $.ajax({
+            url: url,
+            data: formData,
+            method: 'post',
+            processData: false,
+            contentType: false,
+        })
+        .done(function(data){
+            window.location.href = data.url
+        })
+        .fail(function(xhr){
+            if(xhr.status == 400){
+                data = xhr.responseJSON;
+                for (let key in data.errors) {
+                    $(`[name="${key}"]`).parent().append($(`<small class="error_text error_${key}" style ="color:red">${data.errors[key]}</small>`))
+                }
+            }
+        })
+        .always(function(){
+            $(that).find('.btn-submit').removeClass('disabled').removeAttr('disabled');
+        })
+    })
+</script>
+{% endblock %}
